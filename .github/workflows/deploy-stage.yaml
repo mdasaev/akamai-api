@@ -23,7 +23,7 @@ jobs:
           go-version: '1.20'
       - name: Use variables
         run: |
-          echo "akamai env set : $akamai_vars"
+          echo "$akamai_vars" >> "$AKAMAI_EDGEGRID_ACCESS_TOKEN"
        
 
       - name: Run update
