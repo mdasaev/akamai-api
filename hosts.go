@@ -84,6 +84,8 @@ func Send(method, url string, data []byte) []byte {
 	req.Header.Add("content-type", "application/json")
 
 	resp, _ := client.Do(req)
+	golog.Info("Request sent")
+
 	contents, err := io.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {
