@@ -84,8 +84,6 @@ func Send(method, url string, data []byte) []byte {
 	req.Header.Add("content-type", "application/json")
 
 	resp, _ := client.Do(req)
-	golog.Info("Request sent ", *req)
-
 	contents, err := io.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {
@@ -95,6 +93,9 @@ func Send(method, url string, data []byte) []byte {
 	golog.Info("Request status code :")
 	golog.Info(resp.StatusCode)
 	golog.Info("Received data: " + string(contents))
+	if resp.StatusCode != 200 {
+		golog.Error("Request not successfull")
+	}
 	return contents
 }
 
