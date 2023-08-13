@@ -33,9 +33,9 @@ type selectableHostnames struct {
 }
 
 var AkamaiHost string = "https://" + os.Getenv("AKAMAI_EDGEGRID_HOST")
-var configID string = os.Getenv("AKAMAI_CONFIGID")         //92484
-var version = os.Getenv("AKAMAI_CONFIG_version, policyID") //1
-var policyID = "doc1_213348"                               //os.Getenv("AKAMAI_POLICYID")
+var configID string = os.Getenv("AKAMAI_CONFIGID") //92484
+var version = os.Getenv("AKAMAI_CONFIG_VERSION")   //1
+var policyID = "doc1_213348"                       //os.Getenv("AKAMAI_POLICYID")
 var mode = "replace"
 
 func main() {
