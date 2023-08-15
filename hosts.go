@@ -35,16 +35,20 @@ type selectableHostnames struct {
 var AkamaiHost string = "https://" + os.Getenv("AKAMAI_EDGEGRID_HOST")
 var configID string = os.Getenv("AKAMAI_CONFIGID") //92484
 var version = os.Getenv("AKAMAI_CONFIG_VERSION")   //1
-var policyID = "doc1_213348"                       //os.Getenv("AKAMAI_POLICYID")
+var policyID = os.Getenv("AKAMAI_POLICYID")        //os.Getenv("AKAMAI_POLICYID")
 var mode = "replace"
 
 func main() {
-	result := ListSelected(AkamaiHost, configID, version, policyID)
-	//ListSelected(AkamaiHost, configID, version, policyID)
+
+	//Check for new hostnames
+
+	//result := ListSelected(AkamaiHost, configID, version, policyID)
+	configHostnames := ListSelectableOnConfig(AkamaiHost, configID, version)
+	golog.Info("Configuration hostnames: " + string(configHostnames))
 
 	policy := new(selectableHostnames)
 
-	err := json.Unmarshal(result, policy)
+	err := json.Unmarshal(configHostnames, policy)
 	if err != nil {
 		golog.Fatal("Error!", err)
 		return
@@ -99,21 +103,27 @@ func Send(method, url string, data []byte) []byte {
 	return contents
 }
 
-/* only for KSD and Advanced AAP
-func ListSelectable(hostname, configID, version, policyID string) []byte {
+// only for KSD and Advanced AAP
+func ListSelectableOnConfig(hostname, configID, version string) []byte {
 	golog.Info("Starting ListSelectable func")
-	url := hostname + "/appsec/v1/configs/" + configID + "/version/" + version + "/security-policies/" + policyID + "/selectable-hostnames"
+	url := hostname + "/appsec/v1/configs/" + configID + "/version/" + version + "/selectable-hostnames"
 	return Send("GET", url, []byte{})
 
-}*/
+}
 
-func ListSelected(hostname, configID, version, policyID string) []byte {
+func ListSelectedOnPolicy(hostname, configID, version, policyID string) []byte {
 	golog.Info("Starting ListSelected func")
 	url := hostname + "/appsec/v1/configs/" + configID + "/version/" + version + "/security-policies/" + policyID + "/selected-hostnames"
 	return Send("GET", url, []byte{})
 }
 
-func Modify(hostname, configID, version, policyID, mode string, data []byte) {
+func CloneConfig(hostname, configID, version string, data []byte) []byte {
+	golog.Info("Starting CloneConfig func")
+	url := hostname + "/appsec/v1/configs/" + configID + "/versions"
+	return Send("POST", url, data)
+}
+
+func ModifySelectedHostnames(hostname, configID, version, policyID, mode string, data []byte) {
 	golog.Info("Starting Modify func")
 	url := hostname + "/appsec/v1/configs/" + configID + "/version/" + version + "/security-policies/" + policyID + "/selected-hostnames"
 
