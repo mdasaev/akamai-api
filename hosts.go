@@ -43,7 +43,7 @@ func main() {
 	//Check for new hostnames
 
 	//result := ListSelected(AkamaiHost, configID, version, policyID)
-	configHostnames := ListSelectableOnConfig(AkamaiHost, configID, version)
+	configHostnames := ListSelectedOnPolicy(AkamaiHost, configID, version, policyID)
 	golog.Info("Configuration hostnames: " + string(configHostnames))
 
 	policy := new(selectableHostnames)
