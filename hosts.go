@@ -140,7 +140,7 @@ func Send(method, url string, data []byte) []byte {
 	}
 	golog.Info("Request status code :")
 	golog.Info(resp.StatusCode)
-	//golog.Info("Received data: " + string(contents))
+	golog.Info("Received data: " + string(contents))
 	if resp.StatusCode > 201 {
 		golog.Fatal("Response code is not OK!")
 	}
