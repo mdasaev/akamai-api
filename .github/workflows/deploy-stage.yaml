@@ -19,7 +19,7 @@ env:
 
 jobs:
   build:
-    name: Update hostname list
+    name: Manage hostname list
     runs-on: ubuntu-latest
     environment: globaldots
     steps:

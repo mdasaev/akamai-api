@@ -106,14 +106,14 @@ func Send(method, url string, data []byte) []byte {
 // only for KSD and Advanced AAP
 func ListSelectableOnConfig(hostname, configID, version string) []byte {
 	golog.Info("Starting ListSelectable func")
-	url := hostname + "/appsec/v1/configs/" + configID + "/version/" + version + "/selectable-hostnames"
+	url := hostname + "/appsec/v1/configs/" + configID + "/versions/" + version + "/selectable-hostnames"
 	return Send("GET", url, []byte{})
 
 }
 
 func ListSelectedOnPolicy(hostname, configID, version, policyID string) []byte {
 	golog.Info("Starting ListSelected func")
-	url := hostname + "/appsec/v1/configs/" + configID + "/version/" + version + "/security-policies/" + policyID + "/selected-hostnames"
+	url := hostname + "/appsec/v1/configs/" + configID + "/versions/" + version + "/security-policies/" + policyID + "/selected-hostnames"
 	return Send("GET", url, []byte{})
 }
 
@@ -125,7 +125,7 @@ func CloneConfig(hostname, configID, version string, data []byte) []byte {
 
 func ModifySelectedHostnames(hostname, configID, version, policyID, mode string, data []byte) {
 	golog.Info("Starting Modify func")
-	url := hostname + "/appsec/v1/configs/" + configID + "/version/" + version + "/security-policies/" + policyID + "/selected-hostnames"
+	url := hostname + "/appsec/v1/configs/" + configID + "/versions/" + version + "/security-policies/" + policyID + "/selected-hostnames"
 
 	Send("PUT", url, data)
 }
