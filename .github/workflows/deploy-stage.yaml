@@ -1,22 +1,13 @@
 
 name: Add hostnames to Akamai AppSec policy
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 env: 
   AKAMAI_EDGEGRID_ACCESS_TOKEN: ${{ vars.AKAMAI_EDGEGRID_ACCESS_TOKEN }}
   AKAMAI_EDGEGRID_CLIENT_TOKEN: ${{ vars.AKAMAI_EDGEGRID_CLIENT_TOKEN }}
   AKAMAI_EDGEGRID_CLIENT_SECRET: ${{ vars.AKAMAI_EDGEGRID_CLIENT_SECRET }}
   AKAMAI_EDGEGRID_HOST: ${{ vars.AKAMAI_EDGEGRID_HOST }}
-  AKAMAI_CONFIGID: ${{ vars.AKAMAI_CONFIGID }} 
-  AKAMAI_CONFIG_VERSION: ${{ vars.AKAMAI_CONFIG_VERSION }} 
-  AKAMAI_POLICYID: ${{  vars.AKAMAI_POLICYID  }}
-
+ 
 jobs:
   build:
     name: Manage hostname list

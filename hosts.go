@@ -68,16 +68,14 @@ var configID string
 var version string
 var mode = "append"
 var action = "ACTIVATE"
-var network = "STAGING"
-var note = "Update by Manage Hostname List script"
-var notificationEmails = []string{"marat@globaldots.com"}
-
-//var notificationEmails = []string{"itamarg@folloze.com"} //Replace with above to add emails for notifications
+var network = "STAGING" //Update network for PRODUCTION to use in prod
+var note = "Updated by Manage Hostname List script"
+var notificationEmails = []string{"itamarg@folloze.com"} //Set emails for notifications
 
 func main() {
 
 	//get configuration ID, version and policyID for WAP product
-	//function calls...
+
 	configJson := GetConfig(AkamaiHost)
 	config := new(securityConfig)
 	err := json.Unmarshal(configJson, config)
@@ -85,12 +83,10 @@ func main() {
 		golog.Fatal("Error! ", err)
 		return
 	}
+	//At least one security configuration  is expected - if its not there - script will fail
 
 	configID = strconv.Itoa(config.Items[0].ID)
 	version = strconv.Itoa(config.Items[0].ProductionVersion)
-	//overwrite for testing purposes
-	configID = "47313"
-	version = "10"
 
 	//Check for new hostnames
 
@@ -122,8 +118,6 @@ func main() {
 		return
 	}
 	golog.Info(string(newSet))
-	//for testing purposes use fixed array
-	newSet = []byte(`{"hostnameList":[{"hostname":"marat.akamaized.net"}], "mode":"append"}`)
 
 	//clone latest config
 
