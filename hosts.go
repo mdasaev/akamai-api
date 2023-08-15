@@ -111,7 +111,7 @@ func main() {
 	golog.Info(string(newSet))
 
 	//for testing purposes use fixed array
-	newSet = []byte(`{"hostnameList":[{"hostname":"marat.akamaized.net"}, "mode":"append"]}`)
+	newSet = []byte(`{"hostnameList":[{"hostname":"marat.akamaized.net"}], "mode":"append"}`)
 
 	//clone latest config
 
@@ -122,7 +122,7 @@ func main() {
 		return
 	}
 	clone := CloneConfig(AkamaiHost, configID, version, cloneJson)
-	v := new(cloneConfig)
+	v := new(clonedConfig)
 	err = json.Unmarshal(clone, v)
 	if err != nil {
 		golog.Fatal("Error!", err)
@@ -133,6 +133,7 @@ func main() {
 	// increase version for modify operations
 
 	//sent update selectedSet request
+	version = strconv.Itoa(v.Version)
 	ModifySelectedHostnamesOnConfig(AkamaiHost, configID, version, mode, newSet)
 
 }
