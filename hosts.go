@@ -59,7 +59,7 @@ type activation struct {
 	Action             string             `json:"action"`
 	ActivationConfigs  []activationConfig `json:"activationConfigs"`
 	Network            string             `json:"network"`
-	Notes              string             `json:"notes"`
+	Note               string             `json:"note"`
 	NotificationEmails []string           `json:"notificationEmails"`
 }
 
@@ -69,7 +69,7 @@ var version string
 var mode = "append"
 var action = "ACTIVATE"
 var network = "STAGING"
-var notes = "Update by Manage Hostname List script"
+var note = "Update by Manage Hostname List script"
 var notificationEmails = []string{"marat@globaldots.com"}
 
 //var notificationEmails = []string{"itamarg@folloze.com"} //Replace with above to add emails for notifications
@@ -165,7 +165,7 @@ func main() {
 	aC := activationConfig{ConfigId: cid, ConfigVersion: ver}
 	activationData.ActivationConfigs = append(activationData.ActivationConfigs, aC)
 	activationData.Network = network
-	activationData.Notes = notes
+	activationData.Note = note
 	activationData.NotificationEmails = notificationEmails
 
 	activationJSON, err := json.Marshal(activationData)
