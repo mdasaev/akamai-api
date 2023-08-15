@@ -70,7 +70,7 @@ var mode = "append"
 var action = "ACTIVATE"
 var network = "STAGING"
 var notes = "Update by Manage Hostname List script"
-var notificationEmails = []string{}
+var notificationEmails = []string{"marat@globaldots.com"}
 
 //var notificationEmails = []string{"itamarg@folloze.com"} //Replace with above to add emails for notifications
 
