@@ -42,7 +42,7 @@ type securityConfig struct {
 	Items []config `json:"configurations"`
 }
 type config struct {
-	ID                string `json:"id"`
+	ID                int    `json:"id"`
 	ProductionVersion string `json:"productionVersion"`
 }
 
@@ -60,12 +60,12 @@ func main() {
 	config := new(securityConfig)
 	err := json.Unmarshal(configJson, config)
 	if err != nil {
-		golog.Fatal("Error!", err)
+		golog.Fatal("Error! ", err)
 		return
 	}
 	golog.Info("Security config data: ")
 	golog.Info(config)
-	configID = config.Items[0].ID
+	configID = string(config.Items[0].ID)
 	version = config.Items[0].ProductionVersion
 	//Check for new hostnames
 
