@@ -4,6 +4,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -43,8 +44,8 @@ func main() {
 	//Check for new hostnames
 
 	//result := ListSelected(AkamaiHost, configID, version, policyID)
+
 	configHostnames := ListSelectableOnConfig(AkamaiHost, configID, version)
-	golog.Info("Configuration hostnames: " + string(configHostnames))
 
 	policy := new(selectableHostnames)
 
@@ -53,6 +54,9 @@ func main() {
 		golog.Fatal("Error!", err)
 		return
 	}
+
+	golog.Info("Available set: ")
+	fmt.Printf("%+v", policy)
 
 	h := hostnameList{}
 	for _, v := range policy.AvailableSet {
@@ -96,7 +100,7 @@ func Send(method, url string, data []byte) []byte {
 	}
 	golog.Info("Request status code :")
 	golog.Info(resp.StatusCode)
-	golog.Info("Received data: " + string(contents))
+	//golog.Info("Received data: " + string(contents))
 	if resp.StatusCode > 201 {
 		golog.Fatal("Response code is not OK!")
 	}
