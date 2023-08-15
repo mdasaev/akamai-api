@@ -4,7 +4,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -51,11 +50,29 @@ type clonedConfig struct {
 	Version  int `json:"version"`
 }
 
+type activationConfig struct {
+	ConfigId      int `json:"configId"`
+	ConfigVersion int `json:"configVersion"`
+}
+
+type activation struct {
+	Action             string             `json:"action"`
+	ActivationConfigs  []activationConfig `json:"activationConfigs"`
+	Network            string             `json:"network"`
+	Notes              string             `json:"notes"`
+	NotificationEmails []string           `json:"notificationEmails"`
+}
+
 var AkamaiHost string = "https://" + os.Getenv("AKAMAI_EDGEGRID_HOST")
 var configID string
 var version string
-var policyID string
 var mode = "append"
+var action = "ACTIVATION"
+var network = "STAGING"
+var notes = "Update by Manage Hostname List script"
+var notificationEmails = []string{}
+
+//var notificationEmails = []string{"itamarg@folloze.com"} //Replace with above to add emails for notifications
 
 func main() {
 
@@ -68,18 +85,14 @@ func main() {
 		golog.Fatal("Error! ", err)
 		return
 	}
-	golog.Info("Security config data: ")
-	fmt.Printf("%+v", config)
 
 	configID = strconv.Itoa(config.Items[0].ID)
 	version = strconv.Itoa(config.Items[0].ProductionVersion)
 	//overwrite for testing purposes
-
 	configID = "47313"
 	version = "10"
-	//Check for new hostnames
 
-	//result := ListSelected(AkamaiHost, configID, version, policyID)
+	//Check for new hostnames
 
 	configHostnames := ListSelectableOnConfig(AkamaiHost, configID, version)
 
@@ -109,32 +122,59 @@ func main() {
 		return
 	}
 	golog.Info(string(newSet))
-
 	//for testing purposes use fixed array
 	newSet = []byte(`{"hostnameList":[{"hostname":"marat.akamaized.net"}], "mode":"append"}`)
 
 	//clone latest config
 
 	cloneData := cloneConfig{CreateFromVersion: version, RuleUpdate: false}
-	cloneJson, err := json.Marshal(cloneData)
+	cloneJSON, err := json.Marshal(cloneData)
 	if err != nil {
 		golog.Fatal("Error!", err)
 		return
 	}
-	clone := CloneConfig(AkamaiHost, configID, version, cloneJson)
+	clone := CloneConfig(AkamaiHost, configID, version, cloneJSON)
 	v := new(clonedConfig)
 	err = json.Unmarshal(clone, v)
 	if err != nil {
 		golog.Fatal("Error!", err)
 		return
 	}
-	fmt.Printf("%+v", clone)
-	fmt.Printf("%+v", v)
-	// increase version for modify operations
 
 	//sent update selectedSet request
 	version = strconv.Itoa(v.Version)
 	ModifySelectedHostnamesOnConfig(AkamaiHost, configID, version, mode, newSet)
+
+	//Activate new version on "Network"
+	//prepare POST data
+
+	cid, err := strconv.Atoi(configID)
+	if err != nil {
+		golog.Fatal("Error convertation!", err)
+		return
+	}
+	ver, err := strconv.Atoi(version)
+	if err != nil {
+		golog.Fatal("Error convertation!", err)
+		return
+	}
+
+	activationData := new(activation)
+	activationData.Action = action
+	activationData.ActivationConfigs = make([]activationConfig, 0)
+	aC := activationConfig{ConfigId: cid, ConfigVersion: ver}
+	activationData.ActivationConfigs = append(activationData.ActivationConfigs, aC)
+	activationData.Network = network
+	activationData.Notes = notes
+	activationData.NotificationEmails = notificationEmails
+
+	activationJSON, err := json.Marshal(activationData)
+	if err != nil {
+		golog.Fatal("Error!", err)
+		return
+	}
+
+	ActivateConfiguration(AkamaiHost, activationJSON)
 
 }
 
@@ -171,7 +211,6 @@ func Send(method, url string, data []byte) []byte {
 	return contents
 }
 
-// only for KSD and Advanced AAP
 func ListSelectableOnConfig(hostname, configID, version string) []byte {
 	golog.Info("Starting ListSelectable func")
 	url := hostname + "/appsec/v1/configs/" + configID + "/versions/" + version + "/selectable-hostnames"
@@ -200,6 +239,11 @@ func CloneConfig(hostname, configID, version string, data []byte) []byte {
 func ModifySelectedHostnamesOnConfig(hostname, configID, version, mode string, data []byte) {
 	golog.Info("Starting Modify func")
 	url := hostname + "/appsec/v1/configs/" + configID + "/versions/" + version + "/selected-hostnames"
-
 	Send("PUT", url, data)
+}
+func ActivateConfiguration(hostname string, data []byte) {
+	golog.Info("Starting ActivateConfiguration func")
+	url := hostname + "/appsec/v1/activations"
+	Send("POST", url, data)
+
 }
