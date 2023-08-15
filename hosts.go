@@ -4,7 +4,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -55,13 +54,15 @@ func main() {
 		return
 	}
 
-	golog.Info("Available set: ")
-	fmt.Printf("%+v", policy)
-
 	h := hostnameList{}
 	for _, v := range policy.AvailableSet {
 		h.Items = append(h.Items, v.hostname)
 	}
+	if len(h.Items) < 1 {
+		golog.Info("Available set is empty. Nothing to add. Exiting")
+		return
+	}
+
 	h.Mode = mode
 	newSet, err := json.Marshal(h)
 	if err != nil {
