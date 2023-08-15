@@ -4,6 +4,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -32,14 +33,37 @@ type selectableHostnames struct {
 	//SelectedSet []hostRecord
 }
 
+type cloneConfig struct {
+	CreateFromVersion string `json:"createFromVersion"`
+	RuleUpdate        bool   `json:"ruleUpdate"`
+}
+
+type securityConfig struct {
+	ID                string `json:"id"`
+	ProductionVersion string `json:"productionVersion"`
+}
+
 var AkamaiHost string = "https://" + os.Getenv("AKAMAI_EDGEGRID_HOST")
 var configID string = os.Getenv("AKAMAI_CONFIGID") //92484
 var version = os.Getenv("AKAMAI_CONFIG_VERSION")   //1
 var policyID = os.Getenv("AKAMAI_POLICYID")        //os.Getenv("AKAMAI_POLICYID")
-var mode = "replace"
+var mode = "append"
 
 func main() {
 
+	//get configuration ID, version and policyID for WAP product
+	//function calls...
+	configJson := GetConfig(AkamaiHost)
+	config := new(securityConfig)
+	err := json.Unmarshal(configJson, config)
+	if err != nil {
+		golog.Fatal("Error!", err)
+		return
+	}
+	golog.Info("Security config data: ")
+	golog.Info(config)
+	configID = config.ID
+	version = config.ProductionVersion
 	//Check for new hostnames
 
 	//result := ListSelected(AkamaiHost, configID, version, policyID)
@@ -48,20 +72,22 @@ func main() {
 
 	policy := new(selectableHostnames)
 
-	err := json.Unmarshal(configHostnames, policy)
+	err = json.Unmarshal(configHostnames, policy)
 	if err != nil {
 		golog.Fatal("Error!", err)
 		return
 	}
-
+	//grab available hostnames
 	h := hostnameList{}
 	for _, v := range policy.AvailableSet {
 		h.Items = append(h.Items, v.hostname)
 	}
+	//If no new hostnames available - exit
 	if len(h.Items) < 1 {
-		golog.Info("Available set is empty. Nothing to add. Exiting")
+		golog.Warn("Available hostnames set is empty: No new hostnames present.\n Exiting...")
 		return
 	}
+	//If there are, then create new hostname list to append
 
 	h.Mode = mode
 	newSet, err := json.Marshal(h)
@@ -70,6 +96,19 @@ func main() {
 		return
 	}
 	golog.Info(string(newSet))
+
+	//clone latest config
+
+	cloneData := cloneConfig{CreateFromVersion: version, RuleUpdate: false}
+	cloneJson, err := json.Marshal(cloneData)
+	if err != nil {
+		golog.Fatal("Error!", err)
+		return
+	}
+	clone := CloneConfig(AkamaiHost, configID, version, cloneJson)
+
+	fmt.Printf("%+v", clone)
+
 	//sent update request
 	//Modify(AkamaiHost, configID, version, policyID, mode, newSet)
 
@@ -119,6 +158,12 @@ func ListSelectableOnConfig(hostname, configID, version string) []byte {
 func ListSelectedOnPolicy(hostname, configID, version, policyID string) []byte {
 	golog.Info("Starting ListSelected func")
 	url := hostname + "/appsec/v1/configs/" + configID + "/versions/" + version + "/security-policies/" + policyID + "/selected-hostnames"
+	return Send("GET", url, []byte{})
+}
+
+func GetConfig(hostname string) []byte {
+	golog.Info("Starting GetConfig func")
+	url := hostname + "/appsec/v1/configs/"
 	return Send("GET", url, []byte{})
 }
 
