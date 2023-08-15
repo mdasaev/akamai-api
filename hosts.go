@@ -93,13 +93,13 @@ func Send(method, url string, data []byte) []byte {
 	golog.Info("Request status code :")
 	golog.Info(resp.StatusCode)
 	golog.Info("Received data: " + string(contents))
-	if resp.StatusCode != 200 {
+	if resp.StatusCode > 201 {
 		golog.Fatal("Response code is not OK!")
 	}
 	return contents
 }
 
-/*
+/* only for KSD and Advanced AAP
 func ListSelectable(hostname, configID, version, policyID string) []byte {
 	golog.Info("Starting ListSelectable func")
 	url := hostname + "/appsec/v1/configs/" + configID + "/version/" + version + "/security-policies/" + policyID + "/selectable-hostnames"

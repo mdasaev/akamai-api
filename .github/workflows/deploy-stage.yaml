@@ -15,10 +15,11 @@ env:
   AKAMAI_EDGEGRID_HOST: ${{ vars.AKAMAI_EDGEGRID_HOST }}
   AKAMAI_CONFIGID: ${{ vars.AKAMAI_CONFIGID }} 
   AKAMAI_CONFIG_VERSION: ${{ vars.AKAMAI_CONFIG_VERSION }} 
+  AKAMAI_POLICYID: ${{  vars.AKAMAI_POLICYID  }}
 
 jobs:
   build:
-    name: Update hosts
+    name: Update hostname list
     runs-on: ubuntu-latest
     environment: globaldots
     steps:
