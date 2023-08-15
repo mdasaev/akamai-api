@@ -67,7 +67,7 @@ var AkamaiHost string = "https://" + os.Getenv("AKAMAI_EDGEGRID_HOST")
 var configID string
 var version string
 var mode = "append"
-var action = "ACTIVATION"
+var action = "ACTIVATE"
 var network = "STAGING"
 var notes = "Update by Manage Hostname List script"
 var notificationEmails = []string{}
