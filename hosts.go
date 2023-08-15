@@ -65,9 +65,14 @@ func main() {
 		return
 	}
 	golog.Info("Security config data: ")
-	golog.Info(config)
+	fmt.Printf("%+v", config)
+
 	configID = strconv.Itoa(config.Items[0].ID)
 	version = strconv.Itoa(config.Items[0].ProductionVersion)
+	//overwrite for testing purposes
+
+	configID = "47313"
+	version = "12"
 	//Check for new hostnames
 
 	//result := ListSelected(AkamaiHost, configID, version, policyID)
@@ -103,15 +108,15 @@ func main() {
 
 	//clone latest config
 
-	cloneData := cloneConfig{CreateFromVersion: version, RuleUpdate: false}
-	cloneJson, err := json.Marshal(cloneData)
+	//cloneData := cloneConfig{CreateFromVersion: version, RuleUpdate: false}
+	//cloneJson, err := json.Marshal(cloneData)
 	if err != nil {
 		golog.Fatal("Error!", err)
 		return
 	}
-	clone := CloneConfig(AkamaiHost, configID, version, cloneJson)
+	//clone := CloneConfig(AkamaiHost, configID, version, cloneJson)
 
-	fmt.Printf("%+v", clone)
+	//fmt.Printf("%+v", clone)
 
 	//sent update request
 	//Modify(AkamaiHost, configID, version, policyID, mode, newSet)
