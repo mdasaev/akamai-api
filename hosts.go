@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/comcast/go-edgegrid/edgegrid"
 	"github.com/kataras/golog"
@@ -42,8 +43,8 @@ type securityConfig struct {
 	Items []config `json:"configurations"`
 }
 type config struct {
-	ID                int    `json:"id"`
-	ProductionVersion string `json:"productionVersion"`
+	ID                int `json:"id"`
+	ProductionVersion int `json:"productionVersion"`
 }
 
 var AkamaiHost string = "https://" + os.Getenv("AKAMAI_EDGEGRID_HOST")
@@ -65,8 +66,8 @@ func main() {
 	}
 	golog.Info("Security config data: ")
 	golog.Info(config)
-	configID = string(config.Items[0].ID)
-	version = config.Items[0].ProductionVersion
+	configID = strconv.Itoa(config.Items[0].ID)
+	version = strconv.Itoa(config.Items[0].ProductionVersion)
 	//Check for new hostnames
 
 	//result := ListSelected(AkamaiHost, configID, version, policyID)
