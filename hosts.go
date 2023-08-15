@@ -46,11 +46,15 @@ type config struct {
 	ID                int `json:"id"`
 	ProductionVersion int `json:"productionVersion"`
 }
+type clonedConfig struct {
+	ConfigID int `json:"configId"`
+	Version  int `json:"version"`
+}
 
 var AkamaiHost string = "https://" + os.Getenv("AKAMAI_EDGEGRID_HOST")
-var configID string = os.Getenv("AKAMAI_CONFIGID") //92484
-var version = os.Getenv("AKAMAI_CONFIG_VERSION")   //1
-var policyID = os.Getenv("AKAMAI_POLICYID")        //os.Getenv("AKAMAI_POLICYID")
+var configID string
+var version string
+var policyID string
 var mode = "append"
 
 func main() {
@@ -72,7 +76,7 @@ func main() {
 	//overwrite for testing purposes
 
 	configID = "47313"
-	version = "12"
+	version = "10"
 	//Check for new hostnames
 
 	//result := ListSelected(AkamaiHost, configID, version, policyID)
@@ -106,20 +110,30 @@ func main() {
 	}
 	golog.Info(string(newSet))
 
+	//for testing purposes use fixed array
+	newSet = []byte(`{"hostnameList":[{"hostname":"marat.akamaized.net"}, "mode":"append"]}`)
+
 	//clone latest config
 
-	//cloneData := cloneConfig{CreateFromVersion: version, RuleUpdate: false}
-	//cloneJson, err := json.Marshal(cloneData)
+	cloneData := cloneConfig{CreateFromVersion: version, RuleUpdate: false}
+	cloneJson, err := json.Marshal(cloneData)
 	if err != nil {
 		golog.Fatal("Error!", err)
 		return
 	}
-	//clone := CloneConfig(AkamaiHost, configID, version, cloneJson)
+	clone := CloneConfig(AkamaiHost, configID, version, cloneJson)
+	v := new(cloneConfig)
+	err = json.Unmarshal(clone, v)
+	if err != nil {
+		golog.Fatal("Error!", err)
+		return
+	}
+	fmt.Printf("%+v", clone)
+	fmt.Printf("%+v", v)
+	// increase version for modify operations
 
-	//fmt.Printf("%+v", clone)
-
-	//sent update request
-	//Modify(AkamaiHost, configID, version, policyID, mode, newSet)
+	//sent update selectedSet request
+	ModifySelectedHostnamesOnConfig(AkamaiHost, configID, version, mode, newSet)
 
 }
 
@@ -182,9 +196,9 @@ func CloneConfig(hostname, configID, version string, data []byte) []byte {
 	return Send("POST", url, data)
 }
 
-func ModifySelectedHostnames(hostname, configID, version, policyID, mode string, data []byte) {
+func ModifySelectedHostnamesOnConfig(hostname, configID, version, mode string, data []byte) {
 	golog.Info("Starting Modify func")
-	url := hostname + "/appsec/v1/configs/" + configID + "/versions/" + version + "/security-policies/" + policyID + "/selected-hostnames"
+	url := hostname + "/appsec/v1/configs/" + configID + "/versions/" + version + "/selected-hostnames"
 
 	Send("PUT", url, data)
 }
