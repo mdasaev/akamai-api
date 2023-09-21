@@ -110,7 +110,8 @@ func main() {
 		return
 	}
 	//If there are, then create new hostname list to append
-
+	golog.Info("Hostnames to be added: ")
+	golog.Info(h)
 	h.Mode = mode
 	newSet, err := json.Marshal(h)
 	if err != nil {
