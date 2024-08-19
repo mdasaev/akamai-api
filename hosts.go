@@ -86,8 +86,8 @@ var notificationEmails = []string{"marat@globaldots.com"} //Set emails for notif
 func main() {
 	golog.Info(fmt.Sprintf("%T", edge_config))
 	temp := strings.Split(edge_config, "\n")
-	golog.Info(temp[0][0:80])
-	golog.Info(temp[1][0:80])
+	golog.Info(temp[0][0:40])
+	golog.Info(temp[1][0:40])
 
 	/*dat, er1 := os.ReadFile(".edgerc")
 	if er1 != nil {
