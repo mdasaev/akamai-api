@@ -4,6 +4,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -88,6 +89,8 @@ func main() {
 		golog.Fatal(er1)
 	}
 	golog.Info(string(dat))
+
+	fmt.Println(edge_config[1:3])
 
 	//get configuration ID, version and policyID for WAP product
 	golog.Info(edge_config)
