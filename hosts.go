@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/comcast/go-edgegrid/edgegrid"
 	"github.com/kataras/golog"
@@ -72,7 +73,7 @@ type activation struct {
 
 var edge_config = os.Getenv("EDGERC")
 
-var AkamaiHost string = "https://"
+var AkamaiHost string = "https://" + edge_config[0:80]
 
 var configID string
 var version string
@@ -83,15 +84,19 @@ var note = "Updated by Manage Hostname List script"
 var notificationEmails = []string{"marat@globaldots.com"} //Set emails for notifications
 
 func main() {
+	fmt.Sprintf("%T", edge_config)
+	temp := strings.Split(edge_config, "\n")
+	golog.Info(temp[0])
+	golog.Info(temp[1])
 
 	dat, er1 := os.ReadFile(".edgerc")
 	if er1 != nil {
 		golog.Fatal(er1)
 	}
 	golog.Info(string(dat))
-	fmt.Println(edge_config[1:80])
+	fmt.Println(edge_config[0:80])
 
-	//get configuration ID, version and policyID for WAP product
+	//get con	figuration ID, version and policyID for WAP product
 	golog.Info(edge_config)
 	configJson := GetConfig(AkamaiHost)
 	config := new(securityConfig)
