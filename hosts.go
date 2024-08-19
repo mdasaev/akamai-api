@@ -69,7 +69,9 @@ type activation struct {
 	NotificationEmails []string           `json:"notificationEmails"`
 }
 
-var AkamaiHost string = "https://" + os.Getenv("EDGERC")
+var edge_config = os.Getenv("EDGERC")
+
+var AkamaiHost string = "https://"
 
 var configID string
 var version string
@@ -88,7 +90,7 @@ func main() {
 	golog.Info(string(dat))
 
 	//get configuration ID, version and policyID for WAP product
-	golog.Info(AkamaiHost)
+	golog.Info(edge_config)
 	configJson := GetConfig(AkamaiHost)
 	config := new(securityConfig)
 	err := json.Unmarshal(configJson, config)
