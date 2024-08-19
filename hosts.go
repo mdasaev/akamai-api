@@ -13,6 +13,12 @@ import (
 	"github.com/kataras/golog"
 )
 
+type edgerc struct {
+	Host         string `json:"hostname"`
+	Access_token string `json:"access_token"`
+	Client_token string `json:"client_token"`
+	Secret       string `json:"secret"`
+}
 type hostnameList struct {
 	Items []hostname `json:"hostnameList"`
 	Mode  string     `json:"mode"`
@@ -63,19 +69,20 @@ type activation struct {
 	NotificationEmails []string           `json:"notificationEmails"`
 }
 
-var AkamaiHost string = "https://" + os.Getenv("AKAMAI_EDGEGRID_HOST")
+var AkamaiHost string = "https://" + os.Getenv("EDGERC")
+
 var configID string
 var version string
 var mode = "append"
 var action = "ACTIVATE"
 var network = "STAGING" //Update network for PRODUCTION to use in prod
 var note = "Updated by Manage Hostname List script"
-var notificationEmails = []string{"itamarg@folloze.com"} //Set emails for notifications
+var notificationEmails = []string{"marat@globaldots.com"} //Set emails for notifications
 
 func main() {
 
 	//get configuration ID, version and policyID for WAP product
-
+	golog.Info(AkamaiHost)
 	configJson := GetConfig(AkamaiHost)
 	config := new(securityConfig)
 	err := json.Unmarshal(configJson, config)
@@ -169,14 +176,15 @@ func main() {
 		return
 	}
 
-	ActivateConfiguration(AkamaiHost, activationJSON)
+	//ActivateConfiguration(AkamaiHost, activationJSON)
+	golog.Info(activationJSON)
 
 }
 
 func Send(method, url string, data []byte) []byte {
 	client := &http.Client{}
 	payload := bytes.NewReader(data)
-	golog.Info("Ready to send data " + string(data) + "\n to URL " + url)
+	golog.Info("Sending request " + string(data) + "\n to URL " + url)
 
 	req, _ := http.NewRequest(method, url, payload)
 	accessToken := os.Getenv("AKAMAI_EDGEGRID_ACCESS_TOKEN")
