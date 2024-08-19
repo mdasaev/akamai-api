@@ -84,20 +84,18 @@ var note = "Updated by Manage Hostname List script"
 var notificationEmails = []string{"marat@globaldots.com"} //Set emails for notifications
 
 func main() {
-	fmt.Sprintf("%T", edge_config)
+	golog.Info(fmt.Sprintf("%T", edge_config))
 	temp := strings.Split(edge_config, "\n")
 	golog.Info(temp[0])
 	golog.Info(temp[1])
 
-	dat, er1 := os.ReadFile(".edgerc")
+	/*dat, er1 := os.ReadFile(".edgerc")
 	if er1 != nil {
 		golog.Fatal(er1)
-	}
-	golog.Info(string(dat))
-	fmt.Println(edge_config[0:80])
+	}*/
 
 	//get con	figuration ID, version and policyID for WAP product
-	golog.Info(edge_config)
+
 	configJson := GetConfig(AkamaiHost)
 	config := new(securityConfig)
 	err := json.Unmarshal(configJson, config)
