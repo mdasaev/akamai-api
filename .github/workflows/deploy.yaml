@@ -3,21 +3,16 @@ name: Add hostnames to Akamai AppSec policy
 on:
   workflow_dispatch:
 
- 
+env:
+  EDGERC: ${{ secrets.AKAMAI_EDGERC  }}
+
 jobs:
   build:
     name: Manage hostname list
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Generate edgerc file
-        env:
-          EDGERC: ${{ secrets.AKAMAI_EDGERC  }}
-        run: |
-          echo "$EDGERC" 
-          echo "$EDGERC" > ${{ github.workspace }}/.edgerc
-
+      - uses: actions/checkout@v4       
+        
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -25,3 +20,6 @@ jobs:
 
       - name: Run update hostnames for AppSec
         run: go run -v . 
+      
+      - name: Env list
+        run: env
