@@ -4,7 +4,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -81,12 +80,6 @@ var note = "Updated by Manage Hostname List script"
 var notificationEmails = []string{"marat@globaldots.com"} //Set emails for notifications
 
 func main() {
-
-	dat, er1 := os.ReadFile(".edgerc")
-	if er1 != nil {
-		golog.Fatal(er1)
-	}
-	fmt.Print(string(dat))
 
 	//get configuration ID, version and policyID for WAP product
 	golog.Info(AkamaiHost)
