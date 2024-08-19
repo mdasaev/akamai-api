@@ -81,6 +81,12 @@ var notificationEmails = []string{"marat@globaldots.com"} //Set emails for notif
 
 func main() {
 
+	dat, er1 := os.ReadFile(".edgerc")
+	if er1 != nil {
+		golog.Fatal(er1)
+	}
+	golog.Info(string(dat))
+
 	//get configuration ID, version and policyID for WAP product
 	golog.Info(AkamaiHost)
 	configJson := GetConfig(AkamaiHost)
