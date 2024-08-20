@@ -13,9 +13,9 @@ on:
 
 jobs:
   hosts-job:
-    uses: mdasaev/akamai-api/.github/workflows/deploy.yaml@main
+    uses: ./deploy.yaml
     with: 
         TARGET_CN: ${{ inputs.TARGET_CN }} 
-    secrets:
-        EDGERC: ${{ secrets.AKAMAI_EDGERC }}
+    secrets: inherit
+    
   
