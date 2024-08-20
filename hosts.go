@@ -199,6 +199,7 @@ func Send(method, url string, data []byte) []byte {
 	golog.Info("Sending request " + string(data) + "\n to URL " + url)
 
 	req, _ := http.NewRequest(method, url, payload)
+	golog.Warn(edgerc_temp)
 	accessToken := edgerc_temp[1][(strings.Index(edgerc_temp[1], "=")):+1]
 	golog.Info(edgerc_temp[1][(strings.Index(edgerc_temp[1], "=")):+1])
 	clientToken := edgerc_temp[2][(strings.Index(edgerc_temp[2], "=")):+1]
