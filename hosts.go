@@ -84,7 +84,7 @@ var notificationEmails = []string{"marat@globaldots.com"} //Set emails for notif
 
 func main() {
 
-	edgerc_temp := strings.Split(edge_config, "\n")
+	edgerc_temp = strings.Split(edge_config, "\n")
 	golog.Info(edgerc_temp[0][(strings.Index(edgerc_temp[0], "=") + 1):])
 	AkamaiHost = AkamaiHost + edgerc_temp[0][(strings.Index(edgerc_temp[0], "=")+1):]
 
