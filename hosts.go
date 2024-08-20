@@ -90,11 +90,6 @@ func main() {
 	golog.Info(edgerc_temp[0][(strings.Index(edgerc_temp[0], "=") + 1):])
 	AkamaiHost = AkamaiHost + edgerc_temp[0][(strings.Index(edgerc_temp[0], "=")+1):]
 
-	/*dat, er1 := os.ReadFile(".edgerc")
-	if er1 != nil {
-		golog.Fatal(er1)
-	}*/
-
 	//get con	figuration ID, version and policyID for WAP product
 
 	configJson := GetConfig(AkamaiHost)
@@ -109,7 +104,7 @@ func main() {
 	configID = strconv.Itoa(config.Items[0].ID)
 	version = strconv.Itoa(config.Items[0].ProductionVersion)
 
-	//Check for new hostnames
+	//Check for new hostnames *skipped
 
 	configHostnames := ListSelectableOnConfig(AkamaiHost, configID, version)
 
@@ -122,9 +117,13 @@ func main() {
 	}
 	//grab available hostnames
 	h := hostnameList{}
-	for _, v := range policy.AvailableSet {
+	target := *new(hostname)
+	target.Item = targetCN
+	h.Items = append(h.Items, target)
+
+	/*for _, v := range policy.AvailableSet {
 		h.Items = append(h.Items, v.hostname)
-	}
+	}*/
 	//If no new hostnames available - exit
 	if len(h.Items) < 1 {
 		golog.Warn("Available hostnames set is empty: No new hostnames present.\n Exiting...")
