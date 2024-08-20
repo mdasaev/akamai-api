@@ -32,4 +32,5 @@ jobs:
         env:
            EDGERC: ${{ secrets.AKAMAI_EDGERC  }}
       
-  
+      - name: Env list
+        run: env

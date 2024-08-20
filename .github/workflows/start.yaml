@@ -16,3 +16,4 @@ jobs:
     uses: mdasaev/akamai-api/.github/workflows/deploy.yaml@main
     with: 
         TARGET_CN: ${{ inputs.TARGET_CN }} 
+  
