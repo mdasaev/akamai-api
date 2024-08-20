@@ -1,7 +1,11 @@
 
 name: Add hostnames to Akamai AppSec policy
 on:
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      TARGET_CN:
+        type: string
+        required: true
 
 
 jobs:
@@ -24,7 +28,7 @@ jobs:
 
 
       - name: Run update hostnames for AppSec
-        run: go run -v . 
+        run: go run -v . ${{ inputs.TARGET_CN }} 
         env:
            EDGERC: ${{ secrets.AKAMAI_EDGERC  }}
       
