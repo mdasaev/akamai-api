@@ -200,12 +200,12 @@ func Send(method, url string, data []byte) []byte {
 
 	req, _ := http.NewRequest(method, url, payload)
 	golog.Warn(edgerc_temp)
-	accessToken := edgerc_temp[1][(strings.Index(edgerc_temp[1], "=")):+1]
-	golog.Info(edgerc_temp[1][(strings.Index(edgerc_temp[1], "=")):+1])
-	clientToken := edgerc_temp[2][(strings.Index(edgerc_temp[2], "=")):+1]
-	golog.Info(edgerc_temp[2][(strings.Index(edgerc_temp[2], "=")):+1])
-	clientSecret := edgerc_temp[3][(strings.Index(edgerc_temp[3], "=")):+1]
-	golog.Info(edgerc_temp[3][(strings.Index(edgerc_temp[3], "=")):+1])
+	accessToken := edgerc_temp[1][(strings.Index(edgerc_temp[1], "=") + 1):]
+	golog.Info(edgerc_temp[1][(strings.Index(edgerc_temp[1], "="))+1:])
+	clientToken := edgerc_temp[2][(strings.Index(edgerc_temp[2], "=") + 1):]
+	golog.Info(edgerc_temp[2][(strings.Index(edgerc_temp[2], "="))+1:])
+	clientSecret := edgerc_temp[3][(strings.Index(edgerc_temp[3], "=") + 1):]
+	golog.Info(edgerc_temp[3][(strings.Index(edgerc_temp[3], "="))+1:])
 
 	params := edgegrid.NewAuthParams(req, accessToken, clientToken, clientSecret)
 	auth := edgegrid.Auth(params)
