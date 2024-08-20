@@ -71,7 +71,7 @@ type activation struct {
 }
 
 var edge_config = os.Getenv("EDGERC")
-
+var edgerc_temp []string
 var AkamaiHost string = "https://"
 
 var configID string
@@ -84,10 +84,9 @@ var notificationEmails = []string{"marat@globaldots.com"} //Set emails for notif
 
 func main() {
 
-	temp := strings.Split(edge_config, "\n")
-	golog.Info(temp[0][(strings.Index(temp[0], "=")):])
-	AkamaiHost = AkamaiHost + temp[0][(strings.Index(temp[0], "=")+1):]
-	golog.Info(temp[1][(strings.Index(temp[1], "=")):])
+	edgerc_temp := strings.Split(edge_config, "\n")
+	golog.Info(edgerc_temp[0][(strings.Index(edgerc_temp[0], "=") + 1):])
+	AkamaiHost = AkamaiHost + edgerc_temp[0][(strings.Index(edgerc_temp[0], "=")+1):]
 
 	/*dat, er1 := os.ReadFile(".edgerc")
 	if er1 != nil {
@@ -200,9 +199,12 @@ func Send(method, url string, data []byte) []byte {
 	golog.Info("Sending request " + string(data) + "\n to URL " + url)
 
 	req, _ := http.NewRequest(method, url, payload)
-	accessToken := os.Getenv("AKAMAI_EDGEGRID_ACCESS_TOKEN")
-	clientToken := os.Getenv("AKAMAI_EDGEGRID_CLIENT_TOKEN")
-	clientSecret := os.Getenv("AKAMAI_EDGEGRID_CLIENT_SECRET")
+	accessToken := edgerc_temp[1][(strings.Index(edgerc_temp[1], "=")):+1]
+	golog.Info(edgerc_temp[1][(strings.Index(edgerc_temp[1], "=")):+1])
+	clientToken := edgerc_temp[2][(strings.Index(edgerc_temp[2], "=")):+1]
+	golog.Info(edgerc_temp[2][(strings.Index(edgerc_temp[2], "=")):+1])
+	clientSecret := edgerc_temp[3][(strings.Index(edgerc_temp[3], "=")):+1]
+	golog.Info(edgerc_temp[3][(strings.Index(edgerc_temp[3], "=")):+1])
 
 	params := edgegrid.NewAuthParams(req, accessToken, clientToken, clientSecret)
 	auth := edgegrid.Auth(params)
