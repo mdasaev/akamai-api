@@ -4,7 +4,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -73,7 +72,7 @@ type activation struct {
 
 var edge_config = os.Getenv("EDGERC")
 
-var AkamaiHost string = "https://" + edge_config[0:80]
+var AkamaiHost string = "https://"
 
 var configID string
 var version string
@@ -84,10 +83,10 @@ var note = "Updated by Manage Hostname List script"
 var notificationEmails = []string{"marat@globaldots.com"} //Set emails for notifications
 
 func main() {
-	golog.Info(fmt.Sprintf("%T", edge_config))
+
 	temp := strings.Split(edge_config, "\n")
-	golog.Info(temp[0][0:40])
-	golog.Info(temp[1][0:40])
+	golog.Info(temp[0][(strings.Index(temp[0], "=")):79])
+	golog.Info(temp[1][0:79])
 
 	/*dat, er1 := os.ReadFile(".edgerc")
 	if er1 != nil {
