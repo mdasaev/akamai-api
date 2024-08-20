@@ -72,6 +72,8 @@ type activation struct {
 
 var edge_config = os.Getenv("EDGERC")
 var edgerc_temp []string
+var targetCN string = os.Args[1]
+
 var AkamaiHost string = "https://"
 
 var configID string
@@ -83,7 +85,7 @@ var note = "Updated by Manage Hostname List script"
 var notificationEmails = []string{"marat@globaldots.com"} //Set emails for notifications
 
 func main() {
-
+	golog.Info(targetCN)
 	edgerc_temp = strings.Split(edge_config, "\n")
 	golog.Info(edgerc_temp[0][(strings.Index(edgerc_temp[0], "=") + 1):])
 	AkamaiHost = AkamaiHost + edgerc_temp[0][(strings.Index(edgerc_temp[0], "=")+1):]
@@ -139,7 +141,7 @@ func main() {
 	}
 	golog.Info(string(newSet))
 
-	//clone latest config
+	//clone latest prod config
 
 	cloneData := cloneConfig{CreateFromVersion: version, RuleUpdate: false}
 	cloneJSON, err := json.Marshal(cloneData)
@@ -199,13 +201,13 @@ func Send(method, url string, data []byte) []byte {
 	golog.Info("Sending request " + string(data) + "\n to URL " + url)
 
 	req, _ := http.NewRequest(method, url, payload)
-	golog.Warn(edgerc_temp)
+
 	accessToken := edgerc_temp[1][(strings.Index(edgerc_temp[1], "=") + 1):]
-	golog.Info(edgerc_temp[1][(strings.Index(edgerc_temp[1], "="))+1:])
+	//golog.Info(edgerc_temp[1][(strings.Index(edgerc_temp[1], "="))+1:])
 	clientToken := edgerc_temp[2][(strings.Index(edgerc_temp[2], "=") + 1):]
-	golog.Info(edgerc_temp[2][(strings.Index(edgerc_temp[2], "="))+1:])
+	//golog.Info(edgerc_temp[2][(strings.Index(edgerc_temp[2], "="))+1:])
 	clientSecret := edgerc_temp[3][(strings.Index(edgerc_temp[3], "=") + 1):]
-	golog.Info(edgerc_temp[3][(strings.Index(edgerc_temp[3], "="))+1:])
+	//golog.Info(edgerc_temp[3][(strings.Index(edgerc_temp[3], "="))+1:])
 
 	params := edgegrid.NewAuthParams(req, accessToken, clientToken, clientSecret)
 	auth := edgegrid.Auth(params)

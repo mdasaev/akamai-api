@@ -1,0 +1,18 @@
+name: Run Akamai Cli
+run-name: Adding CN - ${{ inputs.target_cn }} by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      TARGET_CN:
+        description: The target domain name
+        type: string
+        required: true
+      
+
+
+jobs:
+  hosts-job:
+    uses: mdasaev/akamai-api/.github/workflows/deploy.yaml@main
+    with: 
+        TARGET_CN: ${{ inputs.TARGET_CN }} 
