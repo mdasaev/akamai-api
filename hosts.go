@@ -86,8 +86,8 @@ func main() {
 
 	temp := strings.Split(edge_config, "\n")
 	golog.Info(temp[0][(strings.Index(temp[0], "=")):])
-	AkamaiHost = AkamaiHost + temp[0][(strings.Index(temp[0], "=")):]
-	golog.Info(temp[1][0:])
+	AkamaiHost = AkamaiHost + temp[0][(strings.Index(temp[0], "=")+1):]
+	golog.Info(temp[1][(strings.Index(temp[1], "=")):])
 
 	/*dat, er1 := os.ReadFile(".edgerc")
 	if er1 != nil {
