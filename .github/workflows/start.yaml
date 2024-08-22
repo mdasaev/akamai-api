@@ -22,7 +22,7 @@ on:
 
 jobs:
   hosts-job:
-    if: ${{ inputs.TARGET_ACTION }} == 'activate'
+    if: ${{ inputs.TARGET_ACTION  == 'activate' }}
     uses: ./.github/workflows/deploy.yaml
     with: 
         TARGET_CN: ${{ inputs.TARGET_CN }} 
