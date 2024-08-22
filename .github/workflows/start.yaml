@@ -8,11 +8,21 @@ on:
         description: The target domain name
         type: string
         required: true
+      TARGET_ACTION:
+        description: Choose the target action
+        type: choice
+        options:
+          - status
+          - activate
+          - delete
+        required: true
+        default: status
       
 
 
 jobs:
   hosts-job:
+    if: ${{ inputs.TARGET_ACTION }} == 'activate'
     uses: ./.github/workflows/deploy.yaml
     with: 
         TARGET_CN: ${{ inputs.TARGET_CN }} 
